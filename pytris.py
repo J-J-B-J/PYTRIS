@@ -1,4 +1,4 @@
-# PYTRIS™ Copyright (c) 2017 Jason Kim All Rights Reserved.
+"""PYTRIS™ Copyright (c) 2017 Jason Kim All Rights Reserved."""
 
 import pygame
 import operator
@@ -7,10 +7,10 @@ from random import *
 from pygame.locals import *
 
 # Define
-block_size = 17 # Height, width of single block
-width = 10 # Board width
-height = 20 # Board height
-framerate = 30 # Bigger -> Slower
+block_size = 17  # Height, width of single block
+width = 10  # Board width
+height = 20  # Board height
+framerate = 30  # Bigger -> Slower
 
 pygame.init()
 
@@ -19,7 +19,9 @@ screen = pygame.display.set_mode((300, 374))
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
 pygame.display.set_caption("PYTRIS™")
 
+
 class ui_variables:
+    """Settings"""
     # Fonts
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
@@ -38,34 +40,50 @@ class ui_variables:
     h5_i = pygame.font.Font(font_path_i, 13)
 
     # Sounds
-    click_sound = pygame.mixer.Sound("assets/sounds/SFX_ButtonUp.wav")
-    move_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceMoveLR.wav")
-    drop_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceHardDrop.wav")
-    single_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearSingle.wav")
-    double_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearDouble.wav")
-    triple_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearTriple.wav")
-    tetris_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialTetris.wav")
+    click_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_ButtonUp.wav"
+    )
+    move_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_PieceMoveLR.wav"
+    )
+    drop_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_PieceHardDrop.wav"
+    )
+    single_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_SpecialLineClearSingle.wav"
+    )
+    double_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_SpecialLineClearDouble.wav"
+    )
+    triple_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_SpecialLineClearTriple.wav"
+    )
+    tetris_sound = pygame.mixer.Sound(
+        "assets/sounds/SFX_SpecialTetris.wav"
+    )
 
     # Background colors
-    black = (10, 10, 10) #rgb(10, 10, 10)
-    white = (255, 255, 255) #rgb(255, 255, 255)
-    grey_1 = (26, 26, 26) #rgb(26, 26, 26)
-    grey_2 = (35, 35, 35) #rgb(35, 35, 35)
-    grey_3 = (55, 55, 55) #rgb(55, 55, 55)
+    black = (10, 10, 10)  # rgb(10, 10, 10)
+    white = (255, 255, 255)  # rgb(255, 255, 255)
+    grey_1 = (26, 26, 26)  # rgb(26, 26, 26)
+    grey_2 = (35, 35, 35)  # rgb(35, 35, 35)
+    grey_3 = (55, 55, 55)  # rgb(55, 55, 55)
 
     # Tetrimino colors
-    cyan = (69, 206, 204) #rgb(69, 206, 204) # I
-    blue = (64, 111, 249) #rgb(64, 111, 249) # J
-    orange = (253, 189, 53) #rgb(253, 189, 53) # L
-    yellow = (246, 227, 90) #rgb(246, 227, 90) # O
-    green = (98, 190, 68) #rgb(98, 190, 68) # S
-    pink = (242, 64, 235) #rgb(242, 64, 235) # T
-    red = (225, 13, 27) #rgb(225, 13, 27) # Z
+    cyan = (69, 206, 204)  # rgb(69, 206, 204)  # I
+    blue = (64, 111, 249)  # rgb(64, 111, 249)  # J
+    orange = (253, 189, 53)  # rgb(253, 189, 53)  # L
+    yellow = (246, 227, 90)  # rgb(246, 227, 90)  # O
+    green = (98, 190, 68)  # rgb(98, 190, 68)   # S
+    pink = (242, 64, 235)  # rgb(242, 64, 235)  # T
+    red = (225, 13, 27)  # rgb(225, 13, 27)   # Z
 
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3]
 
+
 # Draw block
 def draw_block(x, y, color):
+    """Draws a block at (x, y) with color"""
     pygame.draw.rect(
         screen,
         color,
@@ -78,8 +96,9 @@ def draw_block(x, y, color):
         1
     )
 
-# Draw game screen
-def draw_board(next, hold, score, level, goal):
+
+def draw_board(next_, hold_, score_, level_, goal_):
+    """Draw game screen"""
     screen.fill(ui_variables.grey_1)
 
     # Draw sidebar
@@ -90,47 +109,47 @@ def draw_board(next, hold, score, level, goal):
     )
 
     # Draw next mino
-    grid_n = tetrimino.mino_map[next - 1][0]
+    grid_n = tetrimino.mino_map[next_ - 1][0]
 
-    for i in range(4):
-        for j in range(4):
-            dx = 220 + block_size * j
-            dy = 140 + block_size * i
-            if grid_n[i][j] != 0:
+    for col in range(4):
+        for row in range(4):
+            change_x = 220 + block_size * row
+            change_y = 140 + block_size * col
+            if grid_n[col][row] != 0:
                 pygame.draw.rect(
                     screen,
-                    ui_variables.t_color[grid_n[i][j]],
-                    Rect(dx, dy, block_size, block_size)
+                    ui_variables.t_color[grid_n[col][row]],
+                    Rect(change_x, change_y, block_size, block_size)
                 )
 
     # Draw hold mino
-    grid_h = tetrimino.mino_map[hold - 1][0]
+    grid_h = tetrimino.mino_map[hold_ - 1][0]
 
     if hold_mino != -1:
-        for i in range(4):
-            for j in range(4):
-                dx = 220 + block_size * j
-                dy = 50 + block_size * i
-                if grid_h[i][j] != 0:
+        for col in range(4):
+            for row in range(4):
+                change_x = 220 + block_size * row
+                change_y = 50 + block_size * col
+                if grid_h[col][row] != 0:
                     pygame.draw.rect(
                         screen,
-                        ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, block_size, block_size)
+                        ui_variables.t_color[grid_h[col][row]],
+                        Rect(change_x, change_y, block_size, block_size)
                     )
 
     # Set max score
-    if score > 999999:
-        score = 999999
+    if score_ > 999999:
+        score_ = 999999
 
     # Draw texts
-    text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.black)
-    text_next = ui_variables.h5.render("NEXT", 1, ui_variables.black)
-    text_score = ui_variables.h5.render("SCORE", 1, ui_variables.black)
-    score_value = ui_variables.h4.render(str(score), 1, ui_variables.black)
-    text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.black)
-    level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
-    text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
-    goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
+    text_hold = ui_variables.h5.render("HOLD", True, ui_variables.black)
+    text_next = ui_variables.h5.render("NEXT", True, ui_variables.black)
+    text_score = ui_variables.h5.render("SCORE", True, ui_variables.black)
+    score_value = ui_variables.h4.render(str(score_), True, ui_variables.black)
+    text_level = ui_variables.h5.render("LEVEL", True, ui_variables.black)
+    level_value = ui_variables.h4.render(str(level_), True, ui_variables.black)
+    text_goal = ui_variables.h5.render("GOAL", True, ui_variables.black)
+    goal_value = ui_variables.h4.render(str(goal_), True, ui_variables.black)
 
     # Place texts
     screen.blit(text_hold, (215, 14))
@@ -145,133 +164,145 @@ def draw_board(next, hold, score, level, goal):
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = 17 + block_size * x
-            dy = 17 + block_size * y
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+            change_x = 17 + block_size * x
+            change_y = 17 + block_size * y
+            draw_block(
+                change_x,
+                change_y,
+                ui_variables.t_color[matrix[x][y + 1]]
+            )
 
-# Draw a tetrimino
-def draw_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
+
+def draw_mino(x, y, selected_mino, r):
+    """Draw a tetrimino"""
+    grid = tetrimino.mino_map[selected_mino - 1][r]
 
     tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r):
+    while not is_bottom(tx, ty, selected_mino, r):
         ty += 1
 
     # Draw ghost
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix[tx + j][ty + i] = 8
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                matrix[tx + row][ty + col] = 8
 
     # Draw mino
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix[x + j][y + i] = grid[i][j]
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                matrix[x + row][y + col] = grid[col][row]
 
-# Erase a tetrimino
-def erase_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
+
+def erase_mino(x, y, selected_mino, r):
+    """Erase a tetrimino"""
+    grid = tetrimino.mino_map[selected_mino - 1][r]
 
     # Erase ghost
-    for j in range(21):
-        for i in range(10):
-            if matrix[i][j] == 8:
-                matrix[i][j] = 0
+    for row in range(21):
+        for col in range(10):
+            if matrix[col][row] == 8:
+                matrix[col][row] = 0
 
     # Erase mino
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                matrix[x + j][y + i] = 0
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                matrix[x + row][y + col] = 0
 
-# Returns true if mino is at bottom
-def is_bottom(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (y + i + 1) > 20:
+def is_bottom(x, y, selected_mino, r):
+    """Returns true if mino is at bottom"""
+    grid = tetrimino.mino_map[selected_mino - 1][r]
+
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                if (y + col + 1) > 20:
                     return True
-                elif matrix[x + j][y + i + 1] != 0 and matrix[x + j][y + i + 1] != 8:
-                    return True
-
-    return False
-
-# Returns true if mino is at the left edge
-def is_leftedge(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
-
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j - 1) < 0:
-                    return True
-                elif matrix[x + j - 1][y + i] != 0:
+                elif matrix[x + row][y + col + 1] != 0 and \
+                        matrix[x + row][y + col + 1] != 8:
                     return True
 
     return False
 
-# Returns true if mino is at the right edge
-def is_rightedge(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j + 1) > 9:
+def is_leftedge(x, y, selected_mino, r):
+    """Returns true if mino is at the left edge"""
+    grid = tetrimino.mino_map[selected_mino - 1][r]
+
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                if (x + row - 1) < 0:
                     return True
-                elif matrix[x + j + 1][y + i] != 0:
+                elif matrix[x + row - 1][y + col] != 0:
                     return True
 
     return False
 
-# Returns true if turning right is possible
-def is_turnable_r(x, y, mino, r):
+
+def is_rightedge(x, y, selected_mino, r):
+    """Returns true if mino is at the right edge"""
+    grid = tetrimino.mino_map[selected_mino - 1][r]
+
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                if (x + row + 1) > 9:
+                    return True
+                elif matrix[x + row + 1][y + col] != 0:
+                    return True
+
+    return False
+
+
+def is_turnable(grid, x, y):
+    """Returns true if mino can be turned"""
+    for col in range(4):
+        for row in range(4):
+            if grid[col][row] != 0:
+                if (x + row) < 0 or (x + row) > 9 or (y + col) < 0 or \
+                        (y + col) > 20:
+                    return False
+                elif matrix[x + row][y + col] != 0:
+                    return False
+
+    return True
+
+
+def is_turnable_r(x, y, selected_mino, r):
+    """Returns true if turning right is possible"""
     if r != 3:
-        grid = tetrimino.mino_map[mino - 1][r + 1]
+        grid = tetrimino.mino_map[selected_mino - 1][r + 1]
     else:
-        grid = tetrimino.mino_map[mino - 1][0]
+        grid = tetrimino.mino_map[selected_mino - 1][0]
 
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
-                    return False
-                elif matrix[x + j][y + i] != 0:
-                    return False
+    return is_turnable(grid, x, y)
 
-    return True
 
-# Returns true if turning left is possible
-def is_turnable_l(x, y, mino, r):
+def is_turnable_l(x, y, selected_mino, r):
+    """Returns true if turning left is possible"""
     if r != 0:
-        grid = tetrimino.mino_map[mino - 1][r - 1]
+        grid = tetrimino.mino_map[selected_mino - 1][r - 1]
     else:
-        grid = tetrimino.mino_map[mino - 1][3]
+        grid = tetrimino.mino_map[selected_mino - 1][3]
 
-    for i in range(4):
-        for j in range(4):
-            if grid[i][j] != 0:
-                if (x + j) < 0 or (x + j) > 9 or (y + i) < 0 or (y + i) > 20:
-                    return False
-                elif matrix[x + j][y + i] != 0:
-                    return False
+    return is_turnable(grid, x, y)
 
-    return True
 
-# Returns true if new block is drawable
-def is_stackable(mino):
-    grid = tetrimino.mino_map[mino - 1][0]
+def is_stackable(selected_mino):
+    """Returns true if new block is drawable"""
+    grid = tetrimino.mino_map[selected_mino - 1][0]
 
-    for i in range(4):
-        for j in range(4):
-            #print(grid[i][j], matrix[3 + j][i])
-            if grid[i][j] != 0 and matrix[3 + j][i] != 0:
+    for col in range(4):
+        for row in range(4):
+            # print(grid[col][row], matrix[3 + row][col])
+            if grid[col][row] != 0 and matrix[3 + row][col] != 0:
                 return False
 
     return True
+
 
 # Initial values
 blink = False
@@ -286,28 +317,37 @@ goal = level * 5
 bottom_count = 0
 hard_drop = False
 
-dx, dy = 3, 0 # Minos location status
-rotation = 0 # Minos rotation status
+dx, dy = 3, 0  # Minos location status
+rotation = 0  # Minos rotation status
 
-mino = randint(1, 7) # Current mino
-next_mino = randint(1, 7) # Next mino
+mino = randint(1, 7)  # Current mino
+next_mino = randint(1, 7)  # Next mino
 
-hold = False # Hold status
-hold_mino = -1 # Holded mino
+hold = False  # Hold status
+hold_mino = -1  # Holded mino
 
 name_location = 0
 name = [65, 65, 65]
 
-with open('leaderboard.txt') as f:
-    lines = f.readlines()
-lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
 
-leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-for i in lines:
-    leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
+def get_leaders():
+    """Get leaders from file"""
+    lines_ = [line.rstrip('\n') for line in open('leaderboard.txt')]
 
-matrix = [[0 for y in range(height + 1)] for x in range(width)] # Board matrix
+    saved_leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
+    for line in lines_:
+        saved_leaders[line.split(' ')[0]] = int(line.split(' ')[1])
+    return sorted(
+        saved_leaders.items(),
+        key=operator.itemgetter(1),
+        reverse=True
+    )
+
+
+leaders = get_leaders()
+
+
+matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
 
 ###########################################################
 # Loop Start
@@ -323,8 +363,10 @@ while not done:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
                 draw_board(next_mino, hold_mino, score, level, goal)
 
-                pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.white)
-                pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white)
+                pause_text = ui_variables.h2_b.render("PAUSED", True,
+                                                      ui_variables.white)
+                pause_start = ui_variables.h5.render("Press esc to continue",
+                                                     True, ui_variables.white)
 
                 screen.blit(pause_text, (43, 100))
                 if blink:
@@ -437,7 +479,7 @@ while not done:
                     draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
                 elif event.key == K_LSHIFT or event.key == K_c:
-                    if hold == False:
+                    if not hold:
                         ui_variables.move_sound.play()
                         if hold_mino == -1:
                             hold_mino = mino
@@ -541,21 +583,39 @@ while not done:
                 done = True
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
-                over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
-                over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
-                over_start = ui_variables.h5.render("Press return to continue", 1, ui_variables.white)
+                over_text_1 = ui_variables.h2_b.render("GAME", True,
+                                                       ui_variables.white)
+                over_text_2 = ui_variables.h2_b.render("OVER", True,
+                                                       ui_variables.white)
+                over_start = ui_variables.h5.render("Press return to continue",
+                                                    True, ui_variables.white)
 
                 draw_board(next_mino, hold_mino, score, level, goal)
                 screen.blit(over_text_1, (58, 75))
                 screen.blit(over_text_2, (62, 105))
 
-                name_1 = ui_variables.h2_i.render(chr(name[0]), 1, ui_variables.white)
-                name_2 = ui_variables.h2_i.render(chr(name[1]), 1, ui_variables.white)
-                name_3 = ui_variables.h2_i.render(chr(name[2]), 1, ui_variables.white)
+                name_1 = ui_variables.h2_i.render(chr(name[0]), True,
+                                                  ui_variables.white)
+                name_2 = ui_variables.h2_i.render(chr(name[1]), True,
+                                                  ui_variables.white)
+                name_3 = ui_variables.h2_i.render(chr(name[2]), True,
+                                                  ui_variables.white)
 
-                underbar_1 = ui_variables.h2.render("_", 1, ui_variables.white)
-                underbar_2 = ui_variables.h2.render("_", 1, ui_variables.white)
-                underbar_3 = ui_variables.h2.render("_", 1, ui_variables.white)
+                underbar_1 = ui_variables.h2.render(
+                    "_",
+                    True,
+                    ui_variables.white
+                )
+                underbar_2 = ui_variables.h2.render(
+                    "_",
+                    True,
+                    ui_variables.white
+                )
+                underbar_3 = ui_variables.h2.render(
+                    "_",
+                    True,
+                    ui_variables.white
+                )
 
                 screen.blit(name_1, (65, 147))
                 screen.blit(name_2, (95, 147))
@@ -578,8 +638,10 @@ while not done:
                 if event.key == K_RETURN:
                     ui_variables.click_sound.play()
 
-                    outfile = open('leaderboard.txt','a')
-                    outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
+                    outfile = open('leaderboard.txt', 'a')
+                    outfile.write(
+                        chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(
+                            score) + '\n')
                     outfile.close()
 
                     game_over = False
@@ -591,23 +653,16 @@ while not done:
                     hold_mino = -1
                     framerate = 30
                     score = 0
-                    score = 0
                     level = 1
                     goal = level * 5
                     bottom_count = 0
                     hard_drop = False
                     name_location = 0
                     name = [65, 65, 65]
-                    matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    matrix = [[0 for y in range(height + 1)] for x in
+                              range(width)]
 
-                    with open('leaderboard.txt') as f:
-                        lines = f.readlines()
-                    lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
-                    leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-                    for i in lines:
-                        leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-                    leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
+                    leaders = get_leaders()
 
                     pygame.time.set_timer(pygame.USEREVENT, 1)
                 elif event.key == K_RIGHT:
@@ -655,13 +710,22 @@ while not done:
             Rect(0, 187, 300, 187)
         )
 
-        title = ui_variables.h1.render("PYTRIS™", 1, ui_variables.grey_1)
-        title_start = ui_variables.h5.render("Press space to start", 1, ui_variables.white)
-        title_info = ui_variables.h6.render("Copyright (c) 2017 Jason Kim All Rights Reserved.", 1, ui_variables.white)
+        title = ui_variables.h1.render("PYTRIS™", True, ui_variables.grey_1)
+        title_start = ui_variables.h5.render("Press space to start", True,
+                                             ui_variables.white)
+        title_info = ui_variables.h6.render(
+            "Copyright (c) 2017 Jason Kim All Rights Reserved.", True,
+            ui_variables.white)
 
-        leader_1 = ui_variables.h5_i.render('1st ' + leaders[0][0] + ' ' + str(leaders[0][1]), 1, ui_variables.grey_1)
-        leader_2 = ui_variables.h5_i.render('2nd ' + leaders[1][0] + ' ' + str(leaders[1][1]), 1, ui_variables.grey_1)
-        leader_3 = ui_variables.h5_i.render('3rd ' + leaders[2][0] + ' ' + str(leaders[2][1]), 1, ui_variables.grey_1)
+        leader_1 = ui_variables.h5_i.render(
+            '1st ' + leaders[0][0] + ' ' + str(leaders[0][1]), True,
+            ui_variables.grey_1)
+        leader_2 = ui_variables.h5_i.render(
+            '2nd ' + leaders[1][0] + ' ' + str(leaders[1][1]), True,
+            ui_variables.grey_1)
+        leader_3 = ui_variables.h5_i.render(
+            '3rd ' + leaders[2][0] + ' ' + str(leaders[2][1]), True,
+            ui_variables.grey_1)
 
         if blink:
             screen.blit(title_start, (92, 195))
